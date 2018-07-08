@@ -57,8 +57,7 @@ void Camera::render(void) const {
 }
 
 void Camera::updateDirection(void) {
-    if (!directionChanged)
-        return;
+
     // rotate around Y-axis
 	glm::vec3 step1;
     step1 = glm::vec3(cos((rotation.y + 90.0) * DEGREE),

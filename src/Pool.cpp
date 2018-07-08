@@ -84,23 +84,16 @@ void Pool::splashOscillator(int posX, int posZ) {
 }
 
 void Pool::update(float deltaTime) {
-    /********
-     * The movements of the oscillators are affected by their neighbors
-     * The calculation must be done before update the positions.
-     *********/
     for (int i = 0; i < oNumX; i++) {
         for (int j = 0; j < oNumZ; j++) {
             int idx = i + j * oNumX;
-            // store the y temperorily
+            // 储存y方向的位置
             oscillators[idx].newY = oscillators[idx].y;
 
             if ((i == 0) || (i == oNumX - 1) || (j == 0) || (j == oNumZ - 1)) {
-                ; /* NOTE: this condition can make the oscillators
-                   * at the boundaries always have y = 0
-                   * which causes a bounce effect. */
-            } else { // calculate the new speed
-                // update the speed (i.e.accelerate)
-                // according to the 4 neighbors
+				
+            } else {
+				// 计算平均下降，保持一个平衡
                 float avgdiff = oscillators[idx - 1].y   //left
                     + oscillators[idx + 1].y // right
                     + oscillators[idx - oNumX].y //upper
@@ -109,17 +102,12 @@ void Pool::update(float deltaTime) {
 
                 oscillators[idx].speedY += avgdiff * (deltaTime / oWeight);
                 oscillators[idx].speedY *= (1.0f - damping);
-
-                // store the new position.
-                // NOTE: can't just update it
-                // because the neighbors needs the old y
+				
                 oscillators[idx].newY += oscillators[idx].speedY * deltaTime;
             }
         }
     }
-
-    // calculation has been done.
-    // update the y's
+	// 从缓存更新到真正的位置
     for (int i = 0; i < oNumX; i++) {
         for (int j = 0; j < oNumZ; j++) {
             int idx = i + j * oNumX;
@@ -127,6 +115,7 @@ void Pool::update(float deltaTime) {
         }
     }
 
+	
     // update normals using the newly positioned neighbors
     for (int i = 0; i < oNumX; i++) {
         for (int j = 0; j < oNumZ; j++) {
