@@ -1,6 +1,6 @@
 #include "Texture.h"
 
-Texture::Texture(const char *filename, int repeat, int type) {
+void Texture::load(const char *filename, int repeat, int type) {
     // set up
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glGenTextures(1, &ID);

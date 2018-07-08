@@ -13,8 +13,6 @@
 #include <glm\gtc\type_ptr.hpp>
 
 struct Oscillator {
-    // NOTE: the positions of these fields can not be changed!!
-    // The rendering of the pool depends on this layout!!
     float x, y, z;  // position
     float nx, ny, nz;  // normal
     float texX, texY;  // texture coordinates
@@ -24,7 +22,6 @@ struct Oscillator {
 
 class Pool {
 public:
-    /*************** constructors  *************/
     // default
     Pool() {}
     // explicit arguments
@@ -38,7 +35,6 @@ public:
                    std::move(floorTexture));
     }
 
-    /*************** initializers *****************/
     // explicit arguments
     void initialize(int oNumX, int oNumZ, float height,
                     float oDistance, float oWeight,
@@ -61,17 +57,17 @@ public:
     void reset();
 
 private:
-    std::vector<Oscillator> oscillators;  // oscillators for simulating the waves
-    std::vector<int> indices;  // indices for drawing
-    std::unique_ptr<Texture> floorTexture;  // texture for the floor of the pool
+    std::vector<Oscillator> oscillators;  
+    std::vector<int> indices;  
+    std::unique_ptr<Texture> floorTexture; 
 
-    float oDistance; // distance between oscillators
-    float oWeight;  //  weight of oscillators
-    int oNumX, oNumZ;  // number of oscillators in the pool
+    float oDistance; 
+    float oWeight; 
+    int oNumX, oNumZ; 
     int oNum;  // sizeX * sizeZ
     float splash, damping;
-    float height;  // height of the pool
-    int indicesNum;  // number of indices, roughly 2 * oscillatorsNum
+    float height;  
+    int indicesNum;  
 };
 
 #endif

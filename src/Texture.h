@@ -13,7 +13,8 @@
 
 class Texture {
 public:
-	Texture(const char *filename, int repeat = GL_REPEAT,
+	Texture() {}
+	void load(const char *filename, int repeat = GL_REPEAT,
 		int type = JPEG_DEFAULT);
     int getWidth() const;
     int getHeight() const;
