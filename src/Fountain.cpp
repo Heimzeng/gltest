@@ -34,11 +34,11 @@ void Drop::updatePosition(glm::vec3 & position, float dtime,
                So we can't just set the time to 0.0  */
             time = time - int(time);
             if (time > 0.0) time -= 1.0;
-
+			float offsetX = 4.0f, offsetY = -3.6f, offsetZ = 8.0f;
             // Wave caused by the drop
             float distance = pool.getODistance();
-            int oX = (int)((newPosition.x + fountain.center.x) / distance);
-            int oZ = (int)((newPosition.z + fountain.center.z) / distance);
+            int oX = (int)((newPosition.x + fountain.center.x - offsetX) / distance);
+            int oZ = (int)((newPosition.z + fountain.center.z + offsetZ) / distance);
             pool.splashOscillator(oX, oZ);
         }
     } else {

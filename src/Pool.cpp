@@ -177,7 +177,7 @@ void Pool::render() const {
 
     // draw
     glPushMatrix();
-    glTranslatef(0.0f, height, 0.0f);
+    glTranslatef(4.0f, height - 3.6f, -8.0f);
     floorTexture->bind();
     // fill it. NOTE: this will affect the whole scene!!!
     glColor4f(1.0, 1.0, 1.0, 1.0);

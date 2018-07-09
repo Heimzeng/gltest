@@ -3,6 +3,7 @@
 
 #include <GL/glut.h>
 #include <FreeImage.h>
+#pragma comment(lib,"FreeImage.lib")
 
 #ifndef GL_CLAMP_TO_EDGE
 #define GL_CLAMP_TO_EDGE 0x812F
