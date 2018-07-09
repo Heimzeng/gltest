@@ -7,12 +7,15 @@
 #include <cstdio>
 
 #include "Texture.h"
+#include "textures.h"
 #include "Camera.h"
 #include "Basin.h"
 #include "SkyBox.h"
 #include "Ground.h"
 #include "Pool.h"
+#include "Rain.h"
 #include "Fountain.h"
+#include "Flag.h"
 
 // Sky & ground 
 const float SKY_BOX_SIZE = 300.0f;
@@ -48,7 +51,7 @@ const float LIGHT_AMBIENT_1[] = { 0.1f, 0.1f, 0.1f, 0.0f };
 const float LIGHT_DIFFUSE_1[] = {
     211.0f / 255.0f, 183.0f / 255.0f, 133.0f / 255.0f, 0.0f
 };
-const float LIGHT_POSITION_1[] = { 0.8f, 0.4f, -0.5f, 0.0f };
+const float LIGHT_POSITION_1[] = { 0.8f, 1.0f, -0.5f, 0.0f };
 
 const float LIGHT_AMBIENT_2[] = { 0.2f, 0.2f, 0.2f, 0.0f };
 const float LIGHT_DIFFUSE_2[] = {
@@ -56,7 +59,18 @@ const float LIGHT_DIFFUSE_2[] = {
 };
 const float LIGHT_POSITION_2[] = { 0.8f, -0.2f, -0.5f, 0.0f };
 
+GLfloat LightAmbient[] = { 0.5,0.5,0.5,1.0 };
+GLfloat LightDiffuse[] = { 0.5,0.5,0.5,1.0 };
+GLfloat LightPosition[] = { 0,0,-2,0 };
+GLfloat LightPosition2[] = { 0,0,2,0 };
 
+// Flag Configuration
+SF3dVector wind;
+SF3dVector gravity;
+
+COGLTexture FlagTexture;
+
+CFlag Flag;
 
 // Camera Configuration
 const float MOVE_SPEED = 0.2f;
@@ -106,6 +120,9 @@ Skybox skybox;
 
 // The ground
 Ground ground;
+
+// Rain
+Rain rain;
 
 bool isFullScreen = false;
 bool mouseControl = false;
@@ -181,9 +198,13 @@ void drawScene(void) {
     pool.render();
     basin.render();
     ground.render();
+	FlagTexture.SetActive();
+	Flag.Render();
+
     // sky
     glDisable(GL_LIGHTING);
     skybox.render();
+
 
     // water in the air
     glDisable(GL_TEXTURE_2D);
@@ -253,6 +274,7 @@ void display(void) {
     glLoadIdentity();
 
     camera.render();
+	rain.render(-10.0f, camera.getPosition(), camera.getDirection());
 
     glLightfv(GL_LIGHT1, GL_POSITION, LIGHT_POSITION_1);
     glLightfv(GL_LIGHT2, GL_POSITION, LIGHT_POSITION_2);
@@ -263,8 +285,15 @@ void display(void) {
     glutSwapBuffers();
 }
 
+void UpdateFlag(float deltaTime)
+{
+	wind.x = 0.15 + float(rand()) / float(RAND_MAX)*0.15;
+	Flag.UpdateVertices(deltaTime, gravity, wind);
+}
+
 void idle(void) {
     thisTime = glutGet(GLUT_ELAPSED_TIME);
+	
     if (thisTime - lastTime > 1000 / FPS) {
         // update the fountain and the pool
         fountain.update(TIME_DELTA, pool);
@@ -272,11 +301,13 @@ void idle(void) {
 			fountains[i].update(TIME_DELTA, pool);
 		}
         pool.update(TIME_DELTA);
+		UpdateFlag(0.05);
 
         //render the scene:
         display();
         lastTime = thisTime;
     }
+
 }
 
 void reshape(int x, int y) {
@@ -318,6 +349,8 @@ int main(int argc, char **argv) {
     std::unique_ptr<Texture> groundTexture(new Texture);
     std::unique_ptr<Texture[]> skyTextures(new Texture[SKY_BOX_FACES]);
 
+	FlagTexture.LoadFromFile("resource/sysu.bmp");
+
     pebbleTexture->load("resource/pebbles.bmp");
     basinTexture->load("resource/wall.bmp");
     groundTexture->load("resource/grass.bmp");
@@ -344,10 +377,15 @@ int main(int argc, char **argv) {
 	for (int i = 0; i < 4; i++) {
 		fountains[i].initialize(6, 20, 30, DROP_SIZE, 90.0f, 90.0f, 1.0f, 0.12f);
 	}
-
+	for (int i = 0; i < 1000; i++)
+		rain.initialize(i, camera.getPosition(), camera.getDirection());
 
     basin.initialize(BASIN_BORDER_HEIGHT + POOL_HEIGHT, BASIN_BORDER_WIDTH,
                      BASIN_INNER_X, BASIN_INNER_Z, std::move(basinTexture));
+
+	Flag.Initialize(40, 26, 6.0f, 50.0f, 0.997f);
+	wind = F3dVector(0.3, 0.04, 0.00);
+	gravity = F3dVector(0.0, -0.05, 0.005);
 
     ground.initialize(-GROUND_SIZE, GROUND_SIZE,
                       -GROUND_SIZE, GROUND_SIZE,
@@ -386,6 +424,19 @@ int main(int argc, char **argv) {
     glLightfv(GL_LIGHT2, GL_DIFFUSE, LIGHT_DIFFUSE_2);
     glLightfv(GL_LIGHT2, GL_POSITION, LIGHT_POSITION_2);
     glEnable(GL_LIGHT2);
+/*
+glLightfv(GL_LIGHT3, GL_AMBIENT, LightAmbient);
+glLightfv(GL_LIGHT3, GL_DIFFUSE, LightDiffuse);
+glLightfv(GL_LIGHT3, GL_POSITION, LightPosition);
+glEnable(GL_LIGHT3);
+
+glLightfv(GL_LIGHT4, GL_AMBIENT, LightAmbient);
+glLightfv(GL_LIGHT4, GL_DIFFUSE, LightDiffuse);
+glLightfv(GL_LIGHT4, GL_POSITION, LightPosition2);
+glEnable(GL_LIGHT4);
+
+*/
+
     glEnable(GL_LIGHTING);
     glEnable(GL_COLOR_MATERIAL);
 
