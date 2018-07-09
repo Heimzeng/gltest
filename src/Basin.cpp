@@ -12,6 +12,7 @@ void Basin::initialize(const float height, const float borderWidth,
     this->listIdx = glGenLists(1);
     glNewList(listIdx, GL_COMPILE);
     glPushMatrix();
+	glTranslatef(4.0f, height - 4.1f, -8.0f);
     texture->bind();
     glBegin(GL_QUADS);
 

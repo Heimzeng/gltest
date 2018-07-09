@@ -45,6 +45,6 @@ public:
 	void Initialize(int DetailX, int DetailY, float FlagSize, float spring_const, float damping);
 
 	void UpdateVertices( float dtime, SF3dVector gravity, SF3dVector wind);
-	void Render();
+	void Render(float minY);
 	
 };

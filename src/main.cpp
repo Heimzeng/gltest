@@ -69,6 +69,7 @@ SF3dVector wind;
 SF3dVector gravity;
 
 COGLTexture FlagTexture;
+COGLTexture FlagTexture1;
 
 CFlag Flag;
 
@@ -77,10 +78,10 @@ const float MOVE_SPEED = 0.2f;
 const float ROTATE_SPEED = 1.0f;
 const float ROTATE_FACTOR = 0.25f;
 const float CAMERA_POSITION[] = {
-    BASIN_INNER_X / 2.0f, 1.8f, BASIN_INNER_Z + 3.5f
+    0.0f, 0.0f, 0.0f
 };
 const float CAMERA_ROTATION[] = {
-    -5.0f, 0.0f, 0.0f
+    12.0f, 0.0f, 0.0f
 };
 
 
@@ -186,6 +187,12 @@ void keyDown(unsigned char key, int x, int y) {
 		case 'Z':
 			camera.moveY(-MOVE_SPEED);
 			break;
+		case 'r':
+		case 'R':
+			camera.move(-camera.getPosition());
+			camera.rotate(-camera.getRotation());
+			break;
+
     }
 }
 
@@ -197,9 +204,20 @@ void drawScene(void) {
     // set up the scene
     pool.render();
     basin.render();
-    ground.render();
+   // ground.render();
 	FlagTexture.SetActive();
-	Flag.Render();
+	glPushMatrix();
+		glTranslatef(-3.7f, -3.2f, -15.0f);
+		Flag.Render(4.8f);
+	glPopMatrix();
+
+
+	FlagTexture1.SetActive();
+	glPushMatrix();
+		glTranslatef(0.5f, -2.5f, -16.0f);
+		Flag.Render(4.1f);
+	glPopMatrix();
+
 
     // sky
     glDisable(GL_LIGHTING);
@@ -350,6 +368,7 @@ int main(int argc, char **argv) {
     std::unique_ptr<Texture[]> skyTextures(new Texture[SKY_BOX_FACES]);
 
 	FlagTexture.LoadFromFile("resource/sysu.bmp");
+	FlagTexture1.LoadFromFile("resource/China.bmp");
 
     pebbleTexture->load("resource/pebbles.bmp");
     basinTexture->load("resource/wall.bmp");
@@ -363,6 +382,7 @@ int main(int argc, char **argv) {
     skyTextures[SKY_DOWN].load("resource/skybox/down.bmp", GL_CLAMP_TO_EDGE);
 
     // initialize the scene
+	
     skybox.initialize(-SKY_BOX_SIZE, SKY_BOX_SIZE,
                       -SKY_BOX_SIZE, SKY_BOX_SIZE,
                       -SKY_BOX_SIZE, SKY_BOX_SIZE, std::move(skyTextures));
@@ -391,12 +411,13 @@ int main(int argc, char **argv) {
                       -GROUND_SIZE, GROUND_SIZE,
                       std::move(groundTexture), GROUND_TEX_REPEAT);
 
+	float offsetX = 4.0f, offsetY = -3.6f, offsetZ = 8.0f;
     // place fountains 
-	fountain.center = glm::vec3(BASIN_INNER_X / 2.0f, POOL_HEIGHT, BASIN_INNER_Z / 2.0f);
-	fountains[0].center = glm::vec3(BASIN_INNER_X / 8.0f * 7.0f, POOL_HEIGHT, BASIN_INNER_Z / 8.0f * 7.0f);
-	fountains[1].center = glm::vec3(BASIN_INNER_X / 8.0f * 7.0f, POOL_HEIGHT, BASIN_INNER_Z / 8.0f * 1.0f);
-	fountains[2].center = glm::vec3(BASIN_INNER_X / 8.0f * 1.0f, POOL_HEIGHT, BASIN_INNER_Z / 8.0f * 7.0f);
-	fountains[3].center = glm::vec3(BASIN_INNER_X / 8.0f * 1.0f, POOL_HEIGHT, BASIN_INNER_Z / 8.0f * 1.0f);
+	fountain.center = glm::vec3(BASIN_INNER_X / 2.0f + offsetX, POOL_HEIGHT + offsetY, BASIN_INNER_Z / 2.0f - offsetZ);
+	fountains[0].center = glm::vec3(BASIN_INNER_X / 8.0f * 7.0f + offsetX, POOL_HEIGHT + offsetY, BASIN_INNER_Z / 8.0f * 7.0f - offsetZ);
+	fountains[1].center = glm::vec3(BASIN_INNER_X / 8.0f * 7.0f + offsetX, POOL_HEIGHT + offsetY, BASIN_INNER_Z / 8.0f * 1.0f - offsetZ);
+	fountains[2].center = glm::vec3(BASIN_INNER_X / 8.0f * 1.0f + offsetX, POOL_HEIGHT + offsetY, BASIN_INNER_Z / 8.0f * 7.0f - offsetZ);
+	fountains[3].center = glm::vec3(BASIN_INNER_X / 8.0f * 1.0f + offsetX, POOL_HEIGHT + offsetY, BASIN_INNER_Z / 8.0f * 1.0f - offsetZ);
 
     // initialize camera:
 	glm::vec3 cposition, crotation;

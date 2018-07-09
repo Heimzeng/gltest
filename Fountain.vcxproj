@@ -97,7 +97,7 @@
     <ClInclude Include="src\Flag.h" />
     <ClInclude Include="src\Fountain.h" />
     <ClInclude Include="src\Ground.h" />
-    <ClInclude Include="src\Particles.h" />
+    <ClInclude Include="src\LoadModel.h" />
     <ClInclude Include="src\Pool.h" />
     <ClInclude Include="src\Rain.h" />
     <ClInclude Include="src\SkyBox.h" />

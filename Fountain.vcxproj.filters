@@ -77,13 +77,13 @@
     <ClInclude Include="src\Rain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Particles.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Flag.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Vectors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LoadModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

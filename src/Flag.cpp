@@ -197,7 +197,7 @@ void CFlag::UpdateVertices(float dtime, SF3dVector gravity, SF3dVector wind)
 
 }
 
-void CFlag::Render()
+void CFlag::Render(float minY)
 {
 	if (!m_Initialized) return;
 
@@ -225,7 +225,6 @@ void CFlag::Render()
 	float radius=0.2;
 
 	float maxY = 24.0f;
-	float minY = 0.0f;
 
 	float PosArray[] = { -radius, minY, -radius - 20.0f,  //0
 						 -radius, minY, +radius - 20.0f,  //1
